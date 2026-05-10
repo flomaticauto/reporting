@@ -27,13 +27,13 @@ PETROL_HEADERS = [
     "Slip ID","Date","Time","Station","Address","Town/City","Brand","Grade",
     "Litres","R/L","Total (R)","Pay Method","Card","Tx Ref","Vehicle Reg",
     "Odometer","Driver","Business Purpose","Zoho Account","Linked Bank Txn",
-    "Slip File","Status","Notes",
+    "Slip File","Status","Notes","Quintus Actions",
 ]
 OTHER_HEADERS = [
     "Slip ID","Date","Time","Vendor","Address","Town/City","Vendor Type",
     "Total (R)","VAT (R)","Pay Method","Card","Tx Ref","Tax Invoice",
     "Driver","Business Purpose","Zoho Account","Linked Bank Txn",
-    "Slip File","Status","Notes",
+    "Slip File","Status","Notes","Quintus Actions",
 ]
 
 # Per-column widths (px) for the fixed-layout table. Long columns truncate
@@ -51,9 +51,12 @@ COL_WIDTHS = {
     "Business Purpose": 200,
     "Zoho Account": 160, "Linked Bank Txn": 150,
     "Slip File": 200, "Status": 90, "Notes": 280,
+    "Quintus Actions": 320,
 }
 # Columns that should be right-aligned (numeric)
 NUMERIC_COLS = {"Litres", "R/L", "Total (R)", "VAT (R)", "Odometer"}
+# Columns rendered with the action highlight style
+ACTION_COLS = {"Quintus Actions"}
 
 def read_rows(path: Path, sheet_name: str | None, data_start_row: int, ncols: int):
     """Return list of lists. Skip empty rows (no Slip ID)."""
@@ -131,6 +134,10 @@ def render_table(headers, rows, status_idx):
             classes = []
             if header in NUMERIC_COLS:
                 classes.append("num")
+            if header in ACTION_COLS:
+                classes.append("action")
+                if v:
+                    classes.append("action-set")
             if i == status_idx:
                 sc = status_class(v)
                 if sc:
@@ -143,10 +150,11 @@ def render_table(headers, rows, status_idx):
     out.append("</tbody></table></div>")
     return "".join(out)
 
-def page_html(title, eyebrow, blurb, headers, rows, status_idx, total_idx):
+def page_html(title, eyebrow, blurb, headers, rows, status_idx, total_idx, action_idx=None):
     total_amount = 0.0
     pending_count = 0
     needs_review_count = 0
+    actions_count = 0
     for r in rows:
         try:
             total_amount += float(r[total_idx]) if r[total_idx] not in (None, "") else 0.0
@@ -157,6 +165,9 @@ def page_html(title, eyebrow, blurb, headers, rows, status_idx, total_idx):
             pending_count += 1
         if s in ("needs review", "needs-review"):
             needs_review_count += 1
+        if action_idx is not None and action_idx < len(r):
+            if r[action_idx] and str(r[action_idx]).strip():
+                actions_count += 1
 
     table = render_table(headers, rows, status_idx)
     return f"""<!DOCTYPE html>
@@ -190,6 +201,7 @@ def page_html(title, eyebrow, blurb, headers, rows, status_idx, total_idx):
     <div class="viewer-stat"><span class="label">Total slips</span><span class="value">{len(rows)}</span></div>
     <div class="viewer-stat"><span class="label">Pending / hold</span><span class="value" style="color:var(--flo-amber-alert);">{pending_count}</span></div>
     <div class="viewer-stat"><span class="label">Needs review</span><span class="value" style="color:var(--flo-fault-red);">{needs_review_count}</span></div>
+    <div class="viewer-stat"><span class="label">Quintus actions</span><span class="value" style="color:var(--flo-fault-red);">{actions_count}</span></div>
     <div class="viewer-stat"><span class="label">Total amount</span><span class="value">R {total_amount:,.2f}</span></div>
   </div>
 
@@ -221,26 +233,26 @@ def main():
     petrol_rows = read_rows(PETROL_XLSX, "Petrol Slip Tracker", 5, len(PETROL_HEADERS))
     other_rows  = read_rows(OTHER_XLSX,  "Other Slip Tracker",  4, len(OTHER_HEADERS))
 
-    # Petrol: status idx = 21, total idx = 10
+    # Petrol: status idx = 21, total idx = 10, action idx = 23
     (REPO / "petrol-slips.html").write_text(
         page_html(
             "Petrol Slip Tracker",
             "Fuel · Travel",
             "Every fuel-station slip captured by the Friday autonomous run. Pre-import gate held — Zoho status per row.",
             PETROL_HEADERS, petrol_rows,
-            status_idx=21, total_idx=10,
+            status_idx=21, total_idx=10, action_idx=23,
         ),
         encoding="utf-8",
     )
 
-    # Other: status idx = 18, total idx = 7
+    # Other: status idx = 18, total idx = 7, action idx = 20
     (REPO / "other-slips.html").write_text(
         page_html(
             "Other Expense Slips",
             "Expense · Other",
             "Non-petrol receipts (food, groceries, pharmacy, hardware, optometry, etc.). Routed here automatically when the Friday run can't classify a slip as fuel.",
             OTHER_HEADERS, other_rows,
-            status_idx=18, total_idx=7,
+            status_idx=18, total_idx=7, action_idx=20,
         ),
         encoding="utf-8",
     )
@@ -250,15 +262,21 @@ def main():
         return sum(1 for r in rows
                    if (r[idx] or "").strip().lower() in {t.lower() for t in targets})
 
+    def count_actions(rows, action_idx):
+        return sum(1 for r in rows
+                   if action_idx < len(r) and r[action_idx] and str(r[action_idx]).strip())
+
     stats = {
         "updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "petrol": {
             "total":   len(petrol_rows),
             "pending": count_status(petrol_rows, 21, "Pending", "Hold"),
+            "actions": count_actions(petrol_rows, 23),
         },
         "other": {
             "total":        len(other_rows),
             "needs_review": count_status(other_rows, 18, "Needs review", "needs-review", "Hold"),
+            "actions":      count_actions(other_rows, 20),
         },
     }
     (DATA_DIR / "portal-stats.json").write_text(json.dumps(stats, indent=2), encoding="utf-8")

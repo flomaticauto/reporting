@@ -384,3 +384,27 @@ table.viewer-table th.num { text-align: right; font-variant-numeric: tabular-num
 
 .row-needs-review td:first-child { box-shadow: inset 3px 0 0 var(--flo-amber-alert); }
 .row-rejected     td:first-child { box-shadow: inset 3px 0 0 var(--flo-fault-red); }
+
+/* Quintus Actions column — flagged in fault-red so outstanding work is obvious */
+table.viewer-table td.action {
+  font-weight: 500;
+  color: var(--muted);
+  font-style: italic;
+}
+table.viewer-table td.action.action-set {
+  color: var(--flo-fault-red);
+  font-weight: 600;
+  font-style: normal;
+  background: var(--flo-fault-bg) !important;
+  white-space: normal;        /* let action text wrap so it's readable */
+  line-height: 1.35;
+  vertical-align: top;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+table.viewer-table tbody tr:hover td.action.action-set {
+  background: #FFD8D8 !important;
+}
+table.viewer-table th:last-child {
+  background: var(--flo-fault-red);
+}

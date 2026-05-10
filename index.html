@@ -47,6 +47,7 @@
       <div class="card-meta" id="petrolStats">
         <span class="stat"><span class="stat-num">—</span> Slips</span>
         <span class="stat"><span class="stat-num">—</span> Pending</span>
+        <span class="stat"><span class="stat-num">—</span> Actions</span>
       </div>
     </a>
 
@@ -60,6 +61,7 @@
       <div class="card-meta" id="otherStats">
         <span class="stat"><span class="stat-num">—</span> Slips</span>
         <span class="stat"><span class="stat-num">—</span> Needs review</span>
+        <span class="stat"><span class="stat-num">—</span> Actions</span>
       </div>
     </a>
 
@@ -102,15 +104,22 @@
     .then(s => {
       if (!s) return;
       if (s.updated) document.getElementById('updatedPill').textContent = 'Updated ' + s.updated;
+      const actionStyle = n => n > 0
+        ? 'color:var(--flo-fault-red);'
+        : '';
       if (s.petrol) {
         document.getElementById('petrolStats').innerHTML =
           '<span class="stat"><span class="stat-num">' + s.petrol.total + '</span> Slips</span>' +
-          '<span class="stat"><span class="stat-num">' + s.petrol.pending + '</span> Pending</span>';
+          '<span class="stat"><span class="stat-num">' + s.petrol.pending + '</span> Pending</span>' +
+          '<span class="stat" style="' + actionStyle(s.petrol.actions || 0) + '">' +
+            '<span class="stat-num" style="' + actionStyle(s.petrol.actions || 0) + '">' + (s.petrol.actions || 0) + '</span> Actions</span>';
       }
       if (s.other) {
         document.getElementById('otherStats').innerHTML =
           '<span class="stat"><span class="stat-num">' + s.other.total + '</span> Slips</span>' +
-          '<span class="stat"><span class="stat-num">' + s.other.needs_review + '</span> Needs review</span>';
+          '<span class="stat"><span class="stat-num">' + s.other.needs_review + '</span> Needs review</span>' +
+          '<span class="stat" style="' + actionStyle(s.other.actions || 0) + '">' +
+            '<span class="stat-num" style="' + actionStyle(s.other.actions || 0) + '">' + (s.other.actions || 0) + '</span> Actions</span>';
       }
     })
     .catch(() => {});
