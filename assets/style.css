@@ -105,7 +105,6 @@ header.flo-header {
 .flo-pill.success { color: var(--flo-success); }
 .flo-pill.amber   { color: var(--flo-amber-alert); }
 .flo-pill.muted   { color: var(--muted); }
-.flo-pill::before { content: '● '; }
 
 /* ── Main ───────────────────────────────────────────────────────────────── */
 main {
