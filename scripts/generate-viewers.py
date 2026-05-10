@@ -36,6 +36,25 @@ OTHER_HEADERS = [
     "Slip File","Status","Notes",
 ]
 
+# Per-column widths (px) for the fixed-layout table. Long columns truncate
+# with ellipsis; full text is visible on hover via the title="" attribute.
+COL_WIDTHS = {
+    "Slip ID": 70, "Date": 84, "Time": 64,
+    "Station": 150, "Vendor": 150,
+    "Address": 200, "Town/City": 110,
+    "Brand": 100, "Grade": 90,
+    "Vendor Type": 120,
+    "Litres": 64, "R/L": 60,
+    "Total (R)": 80, "VAT (R)": 70,
+    "Pay Method": 110, "Card": 80, "Tx Ref": 130, "Tax Invoice": 70,
+    "Vehicle Reg": 100, "Odometer": 80, "Driver": 130,
+    "Business Purpose": 200,
+    "Zoho Account": 160, "Linked Bank Txn": 150,
+    "Slip File": 200, "Status": 90, "Notes": 280,
+}
+# Columns that should be right-aligned (numeric)
+NUMERIC_COLS = {"Litres", "R/L", "Total (R)", "VAT (R)", "Odometer"}
+
 def read_rows(path: Path, sheet_name: str | None, data_start_row: int, ncols: int):
     """Return list of lists. Skip empty rows (no Slip ID)."""
     if not path.exists():
@@ -79,24 +98,49 @@ def row_class(status: str) -> str:
     return ""
 
 def render_table(headers, rows, status_idx):
-    out = ['<table class="viewer-table"><thead><tr>']
-    out += [f"<th>{escape(h)}</th>" for h in headers]
-    out += ["</tr></thead><tbody>"]
+    out = ['<div class="viewer-table-wrap"><table class="viewer-table">']
+
+    # Column widths via <colgroup> — table-layout:fixed in CSS respects these
+    out.append("<colgroup>")
+    for h in headers:
+        w = COL_WIDTHS.get(h, 120)
+        out.append(f'<col style="width:{w}px">')
+    out.append("</colgroup>")
+
+    out.append("<thead><tr>")
+    for h in headers:
+        cls = " class=\"num\"" if h in NUMERIC_COLS else ""
+        out.append(f"<th{cls}>{escape(h)}</th>")
+    out.append("</tr></thead><tbody>")
+
     if not rows:
-        out += [f'<tr><td colspan="{len(headers)}" style="text-align:center;color:var(--muted);padding:32px;">No rows yet — Friday autonomous run will populate this.</td></tr>']
+        out.append(
+            f'<tr><td colspan="{len(headers)}" '
+            f'style="text-align:center;color:var(--muted);padding:32px;white-space:normal;">'
+            f'No rows yet — Friday autonomous run will populate this.</td></tr>'
+        )
+
     for row in rows:
         status = row[status_idx] if status_idx < len(row) else ""
         rc = row_class(status)
-        out += [f'<tr class="{rc}">']
+        out.append(f'<tr class="{rc}">')
         for i, v in enumerate(row):
+            header = headers[i] if i < len(headers) else ""
             text = escape(fmt_cell(v))
+            tooltip = escape(fmt_cell(v))   # full untruncated text, shown on hover
+            classes = []
+            if header in NUMERIC_COLS:
+                classes.append("num")
             if i == status_idx:
-                cls = status_class(v)
-                out += [f'<td class="{cls}">{text}</td>']
-            else:
-                out += [f"<td>{text}</td>"]
-        out += ["</tr>"]
-    out += ["</tbody></table>"]
+                sc = status_class(v)
+                if sc:
+                    classes.append(sc)
+            cls_attr = f' class="{" ".join(classes)}"' if classes else ""
+            title_attr = f' title="{tooltip}"' if tooltip else ""
+            out.append(f"<td{cls_attr}{title_attr}>{text}</td>")
+        out.append("</tr>")
+
+    out.append("</tbody></table></div>")
     return "".join(out)
 
 def page_html(title, eyebrow, blurb, headers, rows, status_idx, total_idx):

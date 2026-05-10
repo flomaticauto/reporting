@@ -320,41 +320,62 @@ footer.flo-footer {
   font-size: 22px;
 }
 
-table.viewer-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
+/* Scroll wrapper — long tables overflow horizontally rather than blowing the layout */
+.viewer-table-wrap {
+  overflow-x: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
-  overflow: hidden;
+}
+
+table.viewer-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  table-layout: fixed;     /* respect <col> widths exactly */
+  font-family: var(--font-body);
 }
 table.viewer-table th {
   background: var(--flo-navy);
   color: var(--flo-white);
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 12px 10px;
+  letter-spacing: 0.06em;
+  padding: 7px 9px;
   text-align: left;
   white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 table.viewer-table td {
-  padding: 9px 10px;
+  padding: 4px 9px;
   border-top: 1px solid var(--border);
-  vertical-align: top;
+  vertical-align: middle;
+  /* Truncate any cell that's too wide; the browser shows the full text on
+     hover via the title="" attribute set by the generator. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
 }
-table.viewer-table tr:hover td { background: var(--flo-teal-lightest); }
+table.viewer-table tbody tr:nth-child(even) td { background: var(--flo-n-100); }
+table.viewer-table tbody tr:hover    td { background: var(--flo-teal-lightest); }
 
-.status-pending { color: var(--flo-amber-alert); font-weight: 600; }
+/* Numeric columns right-aligned for easier scanning */
+table.viewer-table td.num,
+table.viewer-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.status-pending,
 .status-hold,
 .status-needs-review { color: var(--flo-amber-alert); font-weight: 600; }
-.status-rejected { color: var(--flo-fault-red); font-weight: 600; }
+.status-rejected     { color: var(--flo-fault-red);   font-weight: 600; }
 .status-reviewed,
-.status-approved { color: var(--flo-success); font-weight: 600; }
-.status-imported { color: var(--flo-info); font-weight: 600; }
+.status-approved     { color: var(--flo-success);     font-weight: 600; }
+.status-imported     { color: var(--flo-info);        font-weight: 600; }
 
-.row-needs-review td:first-child { border-left: 3px solid var(--flo-amber-alert); }
-.row-rejected     td:first-child { border-left: 3px solid var(--flo-fault-red); }
+.row-needs-review td:first-child { box-shadow: inset 3px 0 0 var(--flo-amber-alert); }
+.row-rejected     td:first-child { box-shadow: inset 3px 0 0 var(--flo-fault-red); }
