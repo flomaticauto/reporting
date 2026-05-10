@@ -36,10 +36,10 @@
   --r-lg: 12px;
   --r-xl: 16px;
 
-  /* Fonts */
-  --font-display: 'Syne', sans-serif;
-  --font-ui:      'Space Grotesk', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
+  /* Fonts — Plus Jakarta Sans across the board */
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-ui:      'Plus Jakarta Sans', sans-serif;
+  --font-body:    'Plus Jakarta Sans', sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
 
   /* Theme surfaces */
@@ -58,8 +58,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.5;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -69,7 +69,7 @@ body {
 header.flo-header {
   border-bottom: 1px solid var(--border);
   background: var(--surface);
-  padding: 18px 32px;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -77,28 +77,29 @@ header.flo-header {
 .flo-wordmark .flo-name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 18px;
+  font-size: 15px;
   letter-spacing: 0.04em;
   color: var(--flo-teal);
   display: block;
+  line-height: 1.1;
 }
 .flo-wordmark .flo-tagline {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 500;
   font-size: 9px;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.24em;
   color: var(--muted);
-  margin-top: -2px;
+  margin-top: 0;
   text-transform: uppercase;
 }
-.flo-status-pills { display: flex; gap: 8px; }
+.flo-status-pills { display: flex; gap: 6px; }
 .flo-pill {
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 4px 12px;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid currentColor;
 }
@@ -109,50 +110,51 @@ header.flo-header {
 /* ── Main ───────────────────────────────────────────────────────────────── */
 main {
   flex: 1;
-  padding: 48px 32px;
+  padding: 24px 24px 32px;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
 }
 .label-eyebrow {
   font-family: var(--font-ui);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 8px;
+  margin: 0 0 4px;
 }
 .flo-h1 {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 42px;
+  font-size: 28px;
   line-height: 1.1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--foreground);
-  margin: 0 0 12px;
+  margin: 0 0 6px;
 }
 .flo-sub {
   color: var(--muted);
-  font-size: 15px;
-  font-weight: 300;
-  margin: 0 0 36px;
+  font-size: 13px;
+  font-weight: 400;
+  margin: 0 0 20px;
   max-width: 640px;
+  line-height: 1.5;
 }
 
 /* ── Card grid ──────────────────────────────────────────────────────────── */
 .flo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
 }
 .flo-card {
   display: block;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 24px;
+  border-radius: var(--r-md);
+  padding: 14px 16px 14px 20px;
   text-decoration: none;
   color: inherit;
   transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
@@ -163,86 +165,87 @@ main {
   content: '';
   position: absolute;
   inset: 0 auto 0 0;
-  width: 4px;
+  width: 3px;
   background: var(--card-accent, var(--flo-teal));
 }
 .flo-card:hover {
   border-color: var(--card-accent, var(--flo-teal));
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(26, 37, 48, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(26, 37, 48, 0.06);
 }
 .flo-card .card-icon {
-  font-size: 22px;
+  font-size: 16px;
   color: var(--card-accent, var(--flo-teal));
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 .flo-card .card-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  margin: 0 0 6px;
+  margin: 0 0 4px;
 }
 .flo-card .card-desc {
-  font-size: 13.5px;
+  font-size: 12px;
   color: var(--muted);
-  margin: 0 0 12px;
+  margin: 0 0 8px;
+  line-height: 1.45;
 }
 .flo-card .card-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   font-family: var(--font-ui);
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
+  margin-top: 4px;
 }
 .flo-card .stat {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 .flo-card .stat-num {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--foreground);
   letter-spacing: 0;
   text-transform: none;
 }
 
-/* Card colour variants — easy to add more */
 .flo-card.is-petrol  { --card-accent: var(--flo-teal); }
-.flo-card.is-other   { --card-accent: var(--flo-amber-alert); }   /* amber alert */
+.flo-card.is-other   { --card-accent: var(--flo-amber-alert); }
 .flo-card.is-txn     { --card-accent: var(--flo-steel); }
-.flo-card.is-faulty  { --card-accent: var(--flo-fault-red); }     /* fault red */
+.flo-card.is-faulty  { --card-accent: var(--flo-fault-red); }
 
 /* Section header */
 .flo-section-h {
   display: flex;
   align-items: baseline;
-  gap: 14px;
-  margin: 40px 0 16px;
-  padding-bottom: 10px;
+  gap: 10px;
+  margin: 22px 0 10px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--border);
 }
 .flo-section-h h2 {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 16px;
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   margin: 0;
 }
 .flo-section-h .count {
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--muted);
   background: var(--flo-n-100);
-  padding: 2px 8px;
+  padding: 1px 7px;
   border-radius: 999px;
   font-weight: 600;
 }
@@ -251,9 +254,9 @@ main {
 footer.flo-footer {
   border-top: 1px solid var(--border);
   text-align: center;
-  padding: 22px 32px;
+  padding: 12px 24px;
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
   background: var(--surface);
 }
@@ -262,61 +265,64 @@ footer.flo-footer {
 .viewer-back {
   display: inline-block;
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--muted);
   text-decoration: none;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 .viewer-back:hover { color: var(--accent); }
 
 .viewer-toolbar {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 .viewer-search {
   flex: 1;
-  min-width: 240px;
-  padding: 10px 14px;
+  min-width: 220px;
+  padding: 7px 12px;
   border: 1px solid var(--border);
   border-radius: var(--r-md);
   background: var(--surface);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--foreground);
   outline: none;
 }
 .viewer-search:focus { border-color: var(--accent); }
 .viewer-stat-row {
   display: flex;
-  gap: 18px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin: 10px 0 24px;
+  margin: 4px 0 14px;
 }
 .viewer-stat {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
-  padding: 12px 18px;
+  padding: 7px 12px;
   flex: 0 0 auto;
+  min-width: 100px;
 }
 .viewer-stat .label {
   display: block;
   font-family: var(--font-ui);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 9px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--muted);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .viewer-stat .value {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 22px;
+  font-size: 16px;
+  line-height: 1.2;
 }
 
 /* Scroll wrapper — long tables overflow horizontally rather than blowing the layout */
