@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Other Expense Slips — Forflowmatic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="flo-header">
+  <div class="flo-wordmark">
+    <span class="flo-name">FORFLOMATIC</span>
+    <span class="flo-tagline">Reporting</span>
+  </div>
+  <div class="flo-status-pills">
+    <span class="flo-pill success">Live</span>
+  </div>
+</header>
+<main>
+  <a class="viewer-back" href="index.html">← Back to portal</a>
+  <p class="label-eyebrow">Expense · Other</p>
+  <h1 class="flo-h1">Other Expense Slips</h1>
+  <p class="flo-sub">Non-petrol receipts (food, groceries, pharmacy, hardware, optometry, etc.). Routed here automatically when the Friday run can&#x27;t classify a slip as fuel.</p>
+
+  <div class="viewer-stat-row">
+    <div class="viewer-stat"><span class="label">Total slips</span><span class="value">5</span></div>
+    <div class="viewer-stat"><span class="label">Pending / hold</span><span class="value" style="color:var(--flo-amber-alert);">4</span></div>
+    <div class="viewer-stat"><span class="label">Needs review</span><span class="value" style="color:var(--flo-fault-red);">0</span></div>
+    <div class="viewer-stat"><span class="label">Total amount</span><span class="value">R 7,230.46</span></div>
+  </div>
+
+  <div class="viewer-toolbar">
+    <input id="search" type="text" class="viewer-search" placeholder="Search by any field…">
+  </div>
+
+  <table class="viewer-table"><thead><tr><th>Slip ID</th><th>Date</th><th>Time</th><th>Vendor</th><th>Address</th><th>Town/City</th><th>Vendor Type</th><th>Total (R)</th><th>VAT (R)</th><th>Pay Method</th><th>Card</th><th>Tx Ref</th><th>Tax Invoice</th><th>Driver</th><th>Business Purpose</th><th>Zoho Account</th><th>Linked Bank Txn</th><th>Slip File</th><th>Status</th><th>Notes</th></tr></thead><tbody><tr class="row-needs-review"><td>OS-001</td><td>2026-05-09</td><td>17:33</td><td>M&amp;B Panorama</td><td></td><td>Panorama</td><td>Food/Retail</td><td>110</td><td></td><td>Card</td><td></td><td></td><td></td><td></td><td>PENDING - Quintus to confirm business purpose</td><td>PENDING - category TBD</td><td></td><td>Bank statements/Processed slips/Other/2026-05/OS-001_mb-panorama_2026-05-09.jpg</td><td class="status-hold">Hold</td><td>FLAG: NOT a petrol slip. Receipt appears to be food/retail purchase at M&amp;B Panorama. Image rotated 90deg and partially shadowed. Total ~R110 (subtotal ~R90, VAT ~R17.33 at 15%). Standard-rated supply. Cannot determine exact amount or business purpose. Quintus to confirm: (1) exact total, (2) business purpose, (3) whether this is a company expense or personal. No VAT number legible from image. If amount &lt; R5,000 abridged invoice sufficient. Rule: s11(a) if for trade; s23(g) personal = disallowed.</td></tr><tr class="row-needs-review"><td>OS-002</td><td>2026-05-09</td><td>18:18</td><td>Pick n Pay Mulbarton Park</td><td>Cnr Klipriver &amp; Jordi Rd, Mulbarton Park</td><td>Johannesburg</td><td>Grocery</td><td>1,385.10</td><td></td><td>Visa Debit</td><td></td><td>TXN 802832 2629 26290276 11</td><td></td><td></td><td>PENDING - Quintus to confirm business purpose</td><td>PENDING - category TBD</td><td></td><td>Bank statements/Processed slips/Other/2026-05/OS-002_picknpay-mulbarton_2026-05-09.jpg</td><td class="status-hold">Hold</td><td>FLAG: NOT a petrol slip. Grocery purchase at Pick n Pay Mulbarton Park. Total R1,385.10, VAT R172.61 (on standard-rated items; some items zero-rated food). Supplier VAT No: 4810193617. Tax invoice confirmed (heading &quot;TAX INVOICE&quot;). Items include ginger, beef mince, boerewors, bulk thighs, bacon, silverside, snack bar, mixed nuts, raisins, protein bar, carrots, gelspec, carrier bags. Mixed business/personal likely. FLAG: Primarily appears to be personal grocery shopping. Quintus must confirm business purpose before any deduction claimed. Personal grocery = s23(a) disallowed. If legitimate business entertainment or staff costs, requires s11(a) substantiation with full documentation.</td></tr><tr class="row-needs-review"><td>OS-003</td><td>2026-05-08</td><td>05:45 PM</td><td>Dis-Chem Lenz Quarter</td><td>Shop 10 Nirvana Drive &amp; Dimple Road, 1821 Lenasia</td><td>Lenasia</td><td>Pharmacy/Health</td><td>1,054.68</td><td></td><td>Card Payment</td><td></td><td>Rcpt 117 / Store S187 / Till 102 / Pos 0001S18708052610200001170</td><td></td><td></td><td>PENDING - Quintus to confirm business purpose</td><td>PENDING - category TBD</td><td></td><td>Bank statements/Processed slips/Other/2026-05/OS-003_dischem-lenz-quarter_2026-05-08.jpg</td><td class="status-hold">Hold</td><td>FLAG: NOT a petrol slip. Dis-Chem health/pharmacy purchase. Total R1,054.68, VAT R137.57 (items at 15%), zero-rated items R0 VAT. Supplier VAT No: 4820223024 (confirmed on receipt). Tax invoice confirmed. Items: potassium, magnesium glycinate, zinc, mixed nuts, jumbo mixed raisins, USN protein bar, Protex soap, plastic bag. These appear to be personal health supplements and food items. Quintus must confirm business purpose. Personal health supplements = s23(a) disallowed unless directly for trade purposes. Rule: s11(a) + s23(g) test required. Amount R1,054.68 &lt; R5,000; abridged invoice sufficient for VAT purposes.</td></tr><tr class="row-rejected"><td>OS-004</td><td>2026-05-08</td><td>05:45 PM</td><td>Dis-Chem Lenz Quarter</td><td>Shop 10 Nirvana Drive &amp; Dimple Road, 1821 Lenasia</td><td>Lenasia</td><td>Pharmacy/Health</td><td>1,054.68</td><td></td><td>Card Payment</td><td></td><td>Rcpt 117 / Store S187 / Till 102 / Pos 0001S18708052610200001170</td><td></td><td></td><td>DUPLICATE - same receipt as PS-010</td><td>DUPLICATE - DO NOT IMPORT</td><td></td><td>Bank statements/Processed slips/Other/2026-05/OS-004_dischem-lenz-quarter_2026-05-08_DUPLICATE.jpg</td><td class="status-rejected">Rejected</td><td>DUPLICATE: Identical receipt to PS-010 (same store, date, time, till, receipt number Rcpt 117, total R1,054.68). File Scan_20260509_120548 1.jpg is a second scan of the same slip. DO NOT import to Zoho - would create double-counting. Original filed under PS-010. Retain file for audit trail but mark Rejected.</td></tr><tr class="row-needs-review"><td>OS-005</td><td>2026-05-10</td><td>17:19</td><td>FD Mc Farlene ta Specsavers</td><td></td><td></td><td>Optometry/Eyewear</td><td>3626</td><td></td><td>Capitec Bank EFT</td><td>Acc 80321151 (Standard Bank)</td><td>LAT010 / SkyQR 702f-4e73-4770</td><td></td><td>Quintus Lategan</td><td>PENDING - Quintus to confirm business purpose</td><td>PENDING - category TBD (possibly Medical Aid / Eyewear / Personal)</td><td>2026-05-10 R3626.00 (Capitec payment)</td><td>Bank statements/Processed slips/Other/2026-05/OS-005_specsavers_2026-05-10.pdf</td><td class="status-hold">Hold</td><td>FLAG: NOT a petrol slip and NOT an expense slip. This is a Capitec Bank payment notification (proof of EFT) for R3,626.00 to Specsavers (FD Mc Farlene ta Specsavers, Std Bank acct 80321151). Ref LAT010. Personal optometry/eyewear purchase - NO business deduction unless prescribed corrective eyewear required for trade purposes (very narrow test). s23(a) likely applies (personal/domestic). Quintus must confirm: (1) business vs personal, (2) whether an actual tax invoice from Specsavers exists (this is only a payment notification - NOT a tax invoice; cannot claim input VAT without tax invoice). Amount R3,626 &lt; R5,000 so abridged tax invoice from Specsavers needed. DO NOT import to Zoho without Specsavers tax invoice and confirmed business purpose.</td></tr></tbody></table>
+</main>
+<footer class="flo-footer">
+  Forflowmatic Automations · Reporting Portal · Auto-generated <span id="genTs"></span>
+</footer>
+<script>
+  document.getElementById('genTs').textContent = '2026-05-10 19:11';
+  const search = document.getElementById('search');
+  const rows = document.querySelectorAll('.viewer-table tbody tr');
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    rows.forEach(r => {
+      r.style.display = (!q || r.textContent.toLowerCase().includes(q)) ? '' : 'none';
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "updated": "2026-05-10 19:11",
+  "petrol": {
+    "total": 7,
+    "pending": 2
+  },
+  "other": {
+    "total": 5,
+    "needs_review": 4
+  }
+}

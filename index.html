@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forflowmatic — Reporting Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="flo-header">
+  <div class="flo-wordmark">
+    <span class="flo-name">FORFLOMATIC</span>
+    <span class="flo-tagline">Reporting</span>
+  </div>
+  <div class="flo-status-pills">
+    <span class="flo-pill success">Live</span>
+    <span class="flo-pill muted" id="updatedPill">Updated —</span>
+  </div>
+</header>
+
+<main>
+  <p class="label-eyebrow">Workspace · Reports</p>
+  <h1 class="flo-h1">Reporting Portal</h1>
+  <p class="flo-sub">
+    All operational reports for Forflowmatic in one place — slip trackers, account transactions,
+    and any future dashboards land here. Click a card to drill in.
+  </p>
+
+  <div class="flo-section-h">
+    <h2>Expense slips</h2>
+    <span class="count" id="slipCount">2 reports</span>
+  </div>
+
+  <div class="flo-grid">
+
+    <a class="flo-card is-petrol" href="petrol-slips.html">
+      <div class="card-icon">⛽</div>
+      <h3 class="card-title">Petrol Slip Tracker</h3>
+      <p class="card-desc">
+        Every fuel-station slip Quintus has captured. Updated automatically every Friday by the
+        Accountant agent. Pre-import gate held — Zoho status visible per row.
+      </p>
+      <div class="card-meta" id="petrolStats">
+        <span class="stat"><span class="stat-num">—</span> Slips</span>
+        <span class="stat"><span class="stat-num">—</span> Pending</span>
+      </div>
+    </a>
+
+    <a class="flo-card is-other" href="other-slips.html">
+      <div class="card-icon">🛒</div>
+      <h3 class="card-title">Other Expense Slips</h3>
+      <p class="card-desc">
+        Non-petrol receipts — food, groceries, pharmacy, hardware, etc. Captured as part of the
+        same Friday run, routed to a separate tracker for clarity.
+      </p>
+      <div class="card-meta" id="otherStats">
+        <span class="stat"><span class="stat-num">—</span> Slips</span>
+        <span class="stat"><span class="stat-num">—</span> Needs review</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="flo-section-h">
+    <h2>Banking &amp; transactions</h2>
+    <span class="count">1 report</span>
+  </div>
+
+  <div class="flo-grid">
+
+    <a class="flo-card is-txn" href="account-transactions.html">
+      <div class="card-icon">📊</div>
+      <h3 class="card-title">Account Transactions</h3>
+      <p class="card-desc">
+        FNB Gold Business Current (account 63124942194). Categorised transaction view with
+        monthly summaries and Zoho mapping. Updated when bank statements are imported.
+      </p>
+      <div class="card-meta">
+        <span class="stat"><span class="stat-num">FY26</span></span>
+        <span class="stat">FNB</span>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<footer class="flo-footer">
+  Forflowmatic Automations · Reporting Portal · <span id="footerYear"></span>
+</footer>
+
+<script>
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+  // Pull stats from generated viewer data (loaded async; falls back silently).
+  fetch('data/portal-stats.json', { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null)
+    .then(s => {
+      if (!s) return;
+      if (s.updated) document.getElementById('updatedPill').textContent = 'Updated ' + s.updated;
+      if (s.petrol) {
+        document.getElementById('petrolStats').innerHTML =
+          '<span class="stat"><span class="stat-num">' + s.petrol.total + '</span> Slips</span>' +
+          '<span class="stat"><span class="stat-num">' + s.petrol.pending + '</span> Pending</span>';
+      }
+      if (s.other) {
+        document.getElementById('otherStats').innerHTML =
+          '<span class="stat"><span class="stat-num">' + s.other.total + '</span> Slips</span>' +
+          '<span class="stat"><span class="stat-num">' + s.other.needs_review + '</span> Needs review</span>';
+      }
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>

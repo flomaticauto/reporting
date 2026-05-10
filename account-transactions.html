@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forflowmatic — Account Transactions</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --bg-header: #1a2740;
+            --text-primary: #1a2740;
+            --text-secondary: #6c757d;
+            --text-on-dark: #ffffff;
+            --color-income: #2ecc71;
+            --color-expense: #e74c3c;
+            --color-transfer: #3498db;
+            --color-1: #4C72B0;
+            --color-2: #DD8452;
+            --color-3: #55A868;
+            --color-4: #C44E52;
+            --color-5: #8172B3;
+            --color-6: #937860;
+            --color-7: #DA8BC3;
+            --color-8: #8C8C8C;
+            --positive: #27ae60;
+            --negative: #e74c3c;
+            --gap: 16px;
+            --radius: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.5; }
+        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: var(--gap); }
+
+        /* Header */
+        .dashboard-header { background: var(--bg-header); color: var(--text-on-dark); padding: 20px 28px; border-radius: var(--radius); margin-bottom: var(--gap); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .dashboard-header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+        .dashboard-header .subtitle { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+        .filters { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .filter-group { display: flex; align-items: center; gap: 6px; }
+        .filter-group label { font-size: 12px; color: rgba(255,255,255,0.6); white-space: nowrap; }
+        .filter-group select { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; background: rgba(255,255,255,0.1); color: #fff; font-size: 13px; cursor: pointer; }
+        .filter-group select option { background: #1a2740; }
+
+        /* KPI Row */
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); margin-bottom: var(--gap); }
+        .kpi-card { background: var(--bg-card); border-radius: var(--radius); padding: 20px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border-left: 4px solid transparent; }
+        .kpi-card.income { border-color: var(--color-income); }
+        .kpi-card.expense { border-color: var(--color-expense); }
+        .kpi-card.net { border-color: var(--color-1); }
+        .kpi-card.count { border-color: var(--color-2); }
+        .kpi-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+        .kpi-value { font-size: 26px; font-weight: 700; color: var(--text-primary); }
+        .kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* Charts */
+        .chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: var(--gap); margin-bottom: var(--gap); }
+        .chart-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); margin-bottom: var(--gap); }
+        .chart-container { background: var(--bg-card); border-radius: var(--radius); padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+        .chart-container h3 { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .chart-container canvas { max-height: 260px; }
+
+        /* Table */
+        .table-section { background: var(--bg-card); border-radius: var(--radius); padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: var(--gap); }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .table-header h3 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+        .table-count { font-size: 12px; color: var(--text-secondary); }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead th { text-align: left; padding: 9px 12px; border-bottom: 2px solid #e9ecef; color: var(--text-secondary); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; cursor: pointer; user-select: none; }
+        thead th:hover { color: var(--text-primary); }
+        tbody td { padding: 9px 12px; border-bottom: 1px solid #f4f4f4; white-space: nowrap; }
+        tbody tr:hover { background: #fafbfc; }
+        tbody tr:last-child td { border-bottom: none; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-income { background: #d4edda; color: #155724; }
+        .badge-expense { background: #f8d7da; color: #721c24; }
+        .badge-transfer { background: #d1ecf1; color: #0c5460; }
+        .amount-positive { color: var(--positive); font-weight: 600; }
+        .amount-negative { color: var(--negative); font-weight: 600; }
+
+        /* Footer */
+        .dashboard-footer { text-align: center; padding: 12px; font-size: 12px; color: var(--text-secondary); }
+
+        @media (max-width: 900px) {
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .chart-row, .chart-row-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+        <div>
+            <h1>Forflowmatic — Account Transactions</h1>
+            <div class="subtitle">Flomatic Bank Account · ZAR · Mar 2025 – Feb 2026</div>
+        </div>
+        <div class="filters">
+            <div class="filter-group">
+                <label>Type</label>
+                <select id="filter-type" onchange="applyFilters()">
+                    <option value="all">All Types</option>
+                    <option value="customer_payment">Income</option>
+                    <option value="expense">Expenses</option>
+                    <option value="transfer_fund">Petty Cash</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Month</label>
+                <select id="filter-month" onchange="applyFilters()">
+                    <option value="all">All Months</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card income">
+            <div class="kpi-label">Total Income</div>
+            <div class="kpi-value" id="kpi-income">—</div>
+            <div class="kpi-sub" id="kpi-income-sub">—</div>
+        </div>
+        <div class="kpi-card expense">
+            <div class="kpi-label">Total Expenses</div>
+            <div class="kpi-value" id="kpi-expense">—</div>
+            <div class="kpi-sub" id="kpi-expense-sub">—</div>
+        </div>
+        <div class="kpi-card net">
+            <div class="kpi-label">Net Position</div>
+            <div class="kpi-value" id="kpi-net">—</div>
+            <div class="kpi-sub">Income minus expenses</div>
+        </div>
+        <div class="kpi-card count">
+            <div class="kpi-label">Transactions</div>
+            <div class="kpi-value" id="kpi-count">—</div>
+            <div class="kpi-sub" id="kpi-count-sub">—</div>
+        </div>
+    </div>
+
+    <div class="chart-row">
+        <div class="chart-container">
+            <h3>Monthly Income vs Expenses</h3>
+            <canvas id="monthly-chart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3>Expense Breakdown</h3>
+            <canvas id="expense-chart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-row-2">
+        <div class="chart-container">
+            <h3>Customer Payments</h3>
+            <canvas id="customer-chart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3>Transaction Volume by Month</h3>
+            <canvas id="volume-chart"></canvas>
+        </div>
+    </div>
+
+    <div class="table-section">
+        <div class="table-header">
+            <h3>Transaction Detail</h3>
+            <span class="table-count" id="table-count"></span>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('date')">Date ▼</th>
+                        <th onclick="sortTable('transaction_details')">Description</th>
+                        <th onclick="sortTable('transaction_type')">Type</th>
+                        <th onclick="sortTable('reference_number')">Reference</th>
+                        <th onclick="sortTable('net_amount')" style="text-align:right">Amount (ZAR)</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="dashboard-footer">Forflowmatic · Data exported from Zoho Books · As at 25 Apr 2026</div>
+</div>
+
+<script>
+const RAW_DATA = [
+  {date:"2025-03-14",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:47503.39,direction:"debit"},
+  {date:"2025-04-02",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:100000.00,direction:"debit"},
+  {date:"2025-04-07",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:2900.00,direction:"debit"},
+  {date:"2025-05-01",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:3915.90,direction:"debit"},
+  {date:"2025-05-01",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:100000.00,direction:"debit"},
+  {date:"2025-05-30",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:100000.00,direction:"debit"},
+  {date:"2025-05-30",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:10964.52,direction:"debit"},
+  {date:"2025-07-01",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:100000.00,direction:"debit"},
+  {date:"2025-07-18",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:3689.58,direction:"debit"},
+  {date:"2025-07-31",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:25000.00,direction:"debit"},
+  {date:"2025-08-02",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:100000.00,direction:"debit"},
+  {date:"2025-08-31",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:25000.00,direction:"debit"},
+  {date:"2025-09-02",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:4787.88,direction:"debit"},
+  {date:"2025-09-03",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:100000.00,direction:"debit"},
+  {date:"2025-09-30",transaction_details:"Timion",transaction_type:"customer_payment",reference_number:"INV-000025",net_amount:25000.00,direction:"credit"},
+  {date:"2025-09-30",transaction_details:"K & K Paint Manufacturers CC",transaction_type:"customer_payment",reference_number:"INV-000027",net_amount:6846.74,direction:"credit"},
+  {date:"2025-10-01",transaction_details:"Petty Cash",transaction_type:"transfer_fund",reference_number:"",net_amount:100000.00,direction:"debit"},
+  {date:"2025-10-31",transaction_details:"Timion",transaction_type:"customer_payment",reference_number:"INV-000029",net_amount:25000.00,direction:"credit"},
+  {date:"2025-10-31",transaction_details:"K & K Paint Manufacturers CC",transaction_type:"customer_payment",reference_number:"INV-000028",net_amount:100000.00,direction:"credit"},
+  {date:"2025-11-14",transaction_details:"K & K Paint Manufacturers CC",transaction_type:"customer_payment",reference_number:"INV-000030",net_amount:3358.00,direction:"credit"},
+  {date:"2025-11-27",transaction_details:"Timion",transaction_type:"customer_payment",reference_number:"INV-000032",net_amount:25000.00,direction:"credit"},
+  {date:"2025-12-02",transaction_details:"K & K Paint Manufacturers CC",transaction_type:"customer_payment",reference_number:"INV-000031",net_amount:100000.00,direction:"credit"},
+  {date:"2025-12-24",transaction_details:"K & K Paint Manufacturers CC",transaction_type:"customer_payment",reference_number:"INV-000033",net_amount:103379.12,direction:"credit"},
+  {date:"2025-12-29",transaction_details:"Timion",transaction_type:"customer_payment",reference_number:"INV-000034",net_amount:25000.00,direction:"credit"},
+  {date:"2026-01-02",transaction_details:"Office Supplies",transaction_type:"expense",reference_number:"",net_amount:2437.94,direction:"credit"},
+  {date:"2026-01-02",transaction_details:"Other Expenses",transaction_type:"expense",reference_number:"",net_amount:2090.87,direction:"credit"},
+  {date:"2026-01-05",transaction_details:"Telephone Expense",transaction_type:"expense",reference_number:"",net_amount:467.00,direction:"credit"},
+  {date:"2026-01-06",transaction_details:"IT and Internet Expenses",transaction_type:"expense",reference_number:"",net_amount:2635.20,direction:"credit"},
+  {date:"2026-01-06",transaction_details:"Meals and Entertainment",transaction_type:"expense",reference_number:"",net_amount:1477.10,direction:"credit"},
+  {date:"2026-01-06",transaction_details:"Office Supplies",transaction_type:"expense",reference_number:"",net_amount:366.44,direction:"credit"},
+  {date:"2026-01-07",transaction_details:"Fuel/Mileage Expenses",transaction_type:"expense",reference_number:"",net_amount:3522.51,direction:"credit"},
+  {date:"2026-01-07",transaction_details:"IT and Internet Expenses",transaction_type:"expense",reference_number:"",net_amount:468.10,direction:"credit"},
+  {date:"2026-01-07",transaction_details:"Donations & Contributions",transaction_type:"expense",reference_number:"",net_amount:10000.00,direction:"credit"},
+  {date:"2026-01-10",transaction_details:"Donations & Contributions",transaction_type:"expense",reference_number:"",net_amount:4650.00,direction:"credit"},
+  {date:"2026-01-10",transaction_details:"Travel Expense",transaction_type:"expense",reference_number:"",net_amount:778.82,direction:"credit"},
+  {date:"2026-01-10",transaction_details:"Bank Fees and Charges",transaction_type:"expense",reference_number:"",net_amount:34.89,direction:"credit"},
+  {date:"2026-01-12",transaction_details:"Office Supplies",transaction_type:"expense",reference_number:"",net_amount:3083.80,direction:"credit"},
+  {date:"2026-01-13",transaction_details:"Other Expenses",transaction_type:"expense",reference_number:"",net_amount:1016.71,direction:"credit"},
+  {date:"2026-01-14",transaction_details:"Telephone Expense",transaction_type:"expense",reference_number:"",net_amount:69.00,direction:"credit"},
+  {date:"2026-01-17",transaction_details:"Parking",transaction_type:"expense",reference_number:"",net_amount:10.00,direction:"credit"},
+  {date:"2026-01-19",transaction_details:"Other Expenses",transaction_type:"expense",reference_number:"",net_amount:549.00,direction:"credit"},
+  {date:"2026-01-20",transaction_details:"Fuel/Mileage Expenses",transaction_type:"expense",reference_number:"",net_amount:85.90,direction:"credit"},
+  {date:"2026-01-20",transaction_details:"Meals and Entertainment",transaction_type:"expense",reference_number:"",net_amount:56.00,direction:"credit"},
+  {date:"2026-01-21",transaction_details:"Parking",transaction_type:"expense",reference_number:"",net_amount:10.00,direction:"credit"},
+  {date:"2026-01-27",transaction_details:"IT and Internet Expenses",transaction_type:"expense",reference_number:"",net_amount:746.00,direction:"credit"},
+  {date:"2026-01-27",transaction_details:"Fuel/Mileage Expenses",transaction_type:"expense",reference_number:"",net_amount:500.00,direction:"credit"},
+  {date:"2026-01-28",transaction_details:"Telephone Expense",transaction_type:"expense",reference_number:"",net_amount:99.00,direction:"credit"},
+  {date:"2026-01-29",transaction_details:"Office Supplies",transaction_type:"expense",reference_number:"",net_amount:146.96,direction:"credit"},
+  {date:"2026-01-29",transaction_details:"Consultant Expense",transaction_type:"expense",reference_number:"",net_amount:25000.00,direction:"credit"},
+  {date:"2026-01-29",transaction_details:"Bank Fees and Charges",transaction_type:"expense",reference_number:"",net_amount:7.24,direction:"credit"},
+  {date:"2026-01-29",transaction_details:"IT and Internet Expenses",transaction_type:"expense",reference_number:"",net_amount:543.90,direction:"credit"},
+  {date:"2026-01-29",transaction_details:"Timion",transaction_type:"customer_payment",reference_number:"INV-000035",net_amount:25000.00,direction:"credit"},
+  {date:"2026-01-30",transaction_details:"Staff Development",transaction_type:"expense",reference_number:"",net_amount:326.88,direction:"credit"},
+  {date:"2026-01-31",transaction_details:"Bank Fees and Charges",transaction_type:"expense",reference_number:"",net_amount:342.26,direction:"credit"},
+  {date:"2026-01-31",transaction_details:"IT and Internet Expenses",transaction_type:"expense",reference_number:"",net_amount:983.10,direction:"credit"},
+  {date:"2026-01-31",transaction_details:"Bank Fees and Charges",transaction_type:"expense",reference_number:"",net_amount:99.00,direction:"credit"},
+  {date:"2026-01-31",transaction_details:"Office Supplies",transaction_type:"expense",reference_number:"",net_amount:80.97,direction:"credit"},
+  {date:"2026-01-31",transaction_details:"K & K Paint Manufacturers CC",transaction_type:"customer_payment",reference_number:"INV-000036",net_amount:102772.58,direction:"credit"},
+  {date:"2026-02-12",transaction_details:"PLR",transaction_type:"customer_payment",reference_number:"INV-000037",net_amount:1700.00,direction:"credit"},
+  {date:"2026-02-27",transaction_details:"Timion",transaction_type:"customer_payment",reference_number:"INV-000038",net_amount:25000.00,direction:"credit"},
+  {date:"2026-02-27",transaction_details:"K & K Paint Manufacturers CC",transaction_type:"customer_payment",reference_number:"INV-000039",net_amount:114446.75,direction:"credit"}
+];
+
+const MONTHS_ORDER = ["2025-03","2025-04","2025-05","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02"];
+const MONTH_LABELS = {"2025-03":"Mar '25","2025-04":"Apr '25","2025-05":"May '25","2025-07":"Jul '25","2025-08":"Aug '25","2025-09":"Sep '25","2025-10":"Oct '25","2025-11":"Nov '25","2025-12":"Dec '25","2026-01":"Jan '26","2026-02":"Feb '26"};
+
+let filteredData = [...RAW_DATA];
+let sortCol = 'date', sortDir = 'desc';
+let charts = {};
+
+function fmt(n) {
+    if (n === null || n === undefined) return '—';
+    return 'R ' + n.toLocaleString('en-ZA', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function getMonth(d) { return d.slice(0,7); }
+
+function applyFilters() {
+    const type = document.getElementById('filter-type').value;
+    const month = document.getElementById('filter-month').value;
+    filteredData = RAW_DATA.filter(r => {
+        if (type !== 'all' && r.transaction_type !== type) return false;
+        if (month !== 'all' && getMonth(r.date) !== month) return false;
+        return true;
+    });
+    renderKPIs();
+    updateCharts();
+    renderTable();
+}
+
+function populateMonthFilter() {
+    const sel = document.getElementById('filter-month');
+    MONTHS_ORDER.forEach(m => {
+        const o = document.createElement('option');
+        o.value = m; o.textContent = MONTH_LABELS[m];
+        sel.appendChild(o);
+    });
+}
+
+function renderKPIs() {
+    const income = filteredData.filter(r => r.transaction_type === 'customer_payment').reduce((s,r) => s + r.net_amount, 0);
+    const expense = filteredData.filter(r => r.transaction_type === 'expense').reduce((s,r) => s + r.net_amount, 0);
+    const net = income - expense;
+    const count = filteredData.length;
+
+    document.getElementById('kpi-income').textContent = fmt(income);
+    document.getElementById('kpi-income-sub').textContent = filteredData.filter(r=>r.transaction_type==='customer_payment').length + ' payments';
+    document.getElementById('kpi-expense').textContent = fmt(expense);
+    document.getElementById('kpi-expense-sub').textContent = filteredData.filter(r=>r.transaction_type==='expense').length + ' expense entries';
+    const netEl = document.getElementById('kpi-net');
+    netEl.textContent = fmt(net);
+    netEl.style.color = net >= 0 ? 'var(--positive)' : 'var(--negative)';
+    document.getElementById('kpi-count').textContent = count;
+    document.getElementById('kpi-count-sub').textContent = 'across ' + new Set(filteredData.map(r=>getMonth(r.date))).size + ' months';
+}
+
+function buildMonthlyData(data) {
+    const income = {}, expense = {};
+    MONTHS_ORDER.forEach(m => { income[m] = 0; expense[m] = 0; });
+    data.forEach(r => {
+        const m = getMonth(r.date);
+        if (r.transaction_type === 'customer_payment') income[m] = (income[m]||0) + r.net_amount;
+        if (r.transaction_type === 'expense') expense[m] = (expense[m]||0) + r.net_amount;
+    });
+    return { income, expense };
+}
+
+function buildExpenseData(data) {
+    const cats = {};
+    data.filter(r => r.transaction_type === 'expense').forEach(r => {
+        cats[r.transaction_details] = (cats[r.transaction_details]||0) + r.net_amount;
+    });
+    const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]);
+    return { labels: sorted.map(x=>x[0]), values: sorted.map(x=>x[1]) };
+}
+
+function buildCustomerData(data) {
+    const custs = {};
+    data.filter(r => r.transaction_type === 'customer_payment').forEach(r => {
+        custs[r.transaction_details] = (custs[r.transaction_details]||0) + r.net_amount;
+    });
+    const sorted = Object.entries(custs).sort((a,b) => b[1]-a[1]);
+    return { labels: sorted.map(x=>x[0]), values: sorted.map(x=>x[1]) };
+}
+
+function buildVolumeData(data) {
+    const vol = {};
+    MONTHS_ORDER.forEach(m => { vol[m] = 0; });
+    data.forEach(r => { const m = getMonth(r.date); vol[m] = (vol[m]||0) + 1; });
+    return Object.values(vol);
+}
+
+const PALETTE = ['#4C72B0','#DD8452','#55A868','#C44E52','#8172B3','#937860','#DA8BC3','#8C8C8C','#CCB974','#64B5CD'];
+
+function initCharts() {
+    const md = buildMonthlyData(RAW_DATA);
+    const labels = MONTHS_ORDER.map(m => MONTH_LABELS[m]);
+
+    // Monthly income vs expense
+    charts.monthly = new Chart(document.getElementById('monthly-chart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+                { label: 'Income', data: MONTHS_ORDER.map(m => md.income[m]), backgroundColor: '#2ecc7188', borderColor: '#2ecc71', borderWidth: 1, borderRadius: 4 },
+                { label: 'Expenses', data: MONTHS_ORDER.map(m => md.expense[m]), backgroundColor: '#e74c3c88', borderColor: '#e74c3c', borderWidth: 1, borderRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { size: 12 } } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, ticks: { callback: v => 'R ' + (v/1000).toFixed(0) + 'k' } }
+            }
+        }
+    });
+
+    // Expense donut
+    const ed = buildExpenseData(RAW_DATA);
+    charts.expense = new Chart(document.getElementById('expense-chart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: ed.labels, datasets: [{ data: ed.values, backgroundColor: PALETTE.map(c => c+'CC'), borderColor: '#fff', borderWidth: 2 }] },
+        options: {
+            responsive: true, maintainAspectRatio: false, cutout: '55%',
+            plugins: {
+                legend: { position: 'right', labels: { usePointStyle: true, padding: 10, font: { size: 11 }, boxWidth: 10 } },
+                tooltip: { callbacks: { label: ctx => `${ctx.label}: ${fmt(ctx.parsed)}` } }
+            }
+        }
+    });
+
+    // Customer payments bar
+    const cd = buildCustomerData(RAW_DATA);
+    charts.customer = new Chart(document.getElementById('customer-chart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: cd.labels, datasets: [{ label: 'Total Received', data: cd.values, backgroundColor: PALETTE.map(c => c+'CC'), borderColor: PALETTE, borderWidth: 1, borderRadius: 4 }] },
+        options: {
+            responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => fmt(ctx.parsed.x) } } },
+            scales: { x: { beginAtZero: true, ticks: { callback: v => 'R ' + (v/1000).toFixed(0) + 'k' } }, y: { grid: { display: false } } }
+        }
+    });
+
+    // Volume line
+    charts.volume = new Chart(document.getElementById('volume-chart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{ label: 'Transactions', data: buildVolumeData(RAW_DATA), borderColor: '#4C72B0', backgroundColor: '#4C72B022', borderWidth: 2, fill: true, tension: 0.3, pointRadius: 4, pointHoverRadius: 6 }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+}
+
+function updateCharts() {
+    const md = buildMonthlyData(filteredData);
+    charts.monthly.data.datasets[0].data = MONTHS_ORDER.map(m => md.income[m]);
+    charts.monthly.data.datasets[1].data = MONTHS_ORDER.map(m => md.expense[m]);
+    charts.monthly.update('none');
+
+    const ed = buildExpenseData(filteredData);
+    charts.expense.data.labels = ed.labels;
+    charts.expense.data.datasets[0].data = ed.values;
+    charts.expense.update('none');
+
+    const cd = buildCustomerData(filteredData);
+    charts.customer.data.labels = cd.labels;
+    charts.customer.data.datasets[0].data = cd.values;
+    charts.customer.update('none');
+
+    charts.volume.data.datasets[0].data = buildVolumeData(filteredData);
+    charts.volume.update('none');
+}
+
+function renderTable() {
+    const sorted = [...filteredData].sort((a, b) => {
+        const av = a[sortCol], bv = b[sortCol];
+        const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+        return sortDir === 'asc' ? cmp : -cmp;
+    });
+
+    document.getElementById('table-count').textContent = sorted.length + ' transactions';
+
+    const typeLabel = { customer_payment: 'Income', expense: 'Expense', transfer_fund: 'Petty Cash' };
+    const typeBadge = { customer_payment: 'badge-income', expense: 'badge-expense', transfer_fund: 'badge-transfer' };
+
+    const rows = sorted.map(r => {
+        const isIncome = r.transaction_type === 'customer_payment';
+        const amtClass = isIncome ? 'amount-positive' : 'amount-negative';
+        const sign = isIncome ? '+' : '-';
+        return `<tr>
+            <td>${r.date}</td>
+            <td>${r.transaction_details}</td>
+            <td><span class="badge ${typeBadge[r.transaction_type]}">${typeLabel[r.transaction_type]}</span></td>
+            <td>${r.reference_number || '—'}</td>
+            <td style="text-align:right" class="${amtClass}">${sign}${fmt(r.net_amount)}</td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('table-body').innerHTML = rows;
+}
+
+function sortTable(col) {
+    if (sortCol === col) { sortDir = sortDir === 'asc' ? 'desc' : 'asc'; }
+    else { sortCol = col; sortDir = 'desc'; }
+    renderTable();
+}
+
+// Init
+populateMonthFilter();
+renderKPIs();
+initCharts();
+renderTable();
+</script>
+</body>
+</html>

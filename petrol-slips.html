@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Petrol Slip Tracker — Forflowmatic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="flo-header">
+  <div class="flo-wordmark">
+    <span class="flo-name">FORFLOMATIC</span>
+    <span class="flo-tagline">Reporting</span>
+  </div>
+  <div class="flo-status-pills">
+    <span class="flo-pill success">Live</span>
+  </div>
+</header>
+<main>
+  <a class="viewer-back" href="index.html">← Back to portal</a>
+  <p class="label-eyebrow">Fuel · Travel</p>
+  <h1 class="flo-h1">Petrol Slip Tracker</h1>
+  <p class="flo-sub">Every fuel-station slip captured by the Friday autonomous run. Pre-import gate held — Zoho status per row.</p>
+
+  <div class="viewer-stat-row">
+    <div class="viewer-stat"><span class="label">Total slips</span><span class="value">7</span></div>
+    <div class="viewer-stat"><span class="label">Pending / hold</span><span class="value" style="color:var(--flo-amber-alert);">2</span></div>
+    <div class="viewer-stat"><span class="label">Needs review</span><span class="value" style="color:var(--flo-fault-red);">0</span></div>
+    <div class="viewer-stat"><span class="label">Total amount</span><span class="value">R 4,512.67</span></div>
+  </div>
+
+  <div class="viewer-toolbar">
+    <input id="search" type="text" class="viewer-search" placeholder="Search by any field…">
+  </div>
+
+  <table class="viewer-table"><thead><tr><th>Slip ID</th><th>Date</th><th>Time</th><th>Station</th><th>Address</th><th>Town/City</th><th>Brand</th><th>Grade</th><th>Litres</th><th>R/L</th><th>Total (R)</th><th>Pay Method</th><th>Card</th><th>Tx Ref</th><th>Vehicle Reg</th><th>Odometer</th><th>Driver</th><th>Business Purpose</th><th>Zoho Account</th><th>Linked Bank Txn</th><th>Slip File</th><th>Status</th><th>Notes</th></tr></thead><tbody><tr class=""><td>PS-001</td><td>2026-03-25</td><td>17:08</td><td>Sasol Walkerville</td><td>Midvaal Crossing, Walkerville</td><td>Walkerville</td><td>Sasol</td><td>95 ULP</td><td></td><td></td><td>500</td><td>Card</td><td>****1097</td><td></td><td></td><td></td><td></td><td></td><td>Travel - Motor Vehicle Expenses</td><td></td><td>Bank statements/Processed slips/2026-03/PS-001_sasol-walkerville_2026-03-25.jpg</td><td class="status-reviewed">Reviewed</td><td>Litres and price/litre not legible (angled photo). Round-amount fill R500. VAT at 15/115 (current SA rate; SOP template shows 14/114 which is pre-Apr 2018).</td></tr><tr class=""><td>PS-002</td><td>2026-04-20</td><td>12:25</td><td>Sasol Riverlea</td><td>Riverlea, Johannesburg</td><td>Johannesburg</td><td>Sasol</td><td>95 ULP</td><td></td><td></td><td>882.77</td><td>Card</td><td>****1097</td><td></td><td></td><td></td><td></td><td></td><td>Travel - Motor Vehicle Expenses</td><td></td><td>Bank statements/Processed slips/2026-04/PS-002_sasol-riverlea_2026-04-20.jpg</td><td class="status-reviewed">Reviewed</td><td>Litres and price/litre not legible on image. VAT at 15/115.</td></tr><tr class=""><td>PS-003</td><td>2026-04-13</td><td>14:03</td><td>Total Volta (K43 Service Station)</td><td>Cnr K43 &amp; Volta Streets, Ext 10</td><td>Lenasia</td><td>Total</td><td>Excellium ULP 95</td><td>40.65</td><td>23.36</td><td>949.60</td><td>Card (Visa)</td><td>****1097</td><td>TL23454495695537ebbc</td><td></td><td></td><td></td><td></td><td>Travel - Motor Vehicle Expenses</td><td></td><td>Bank statements/Processed slips/2026-04/PS-003_total-volta-lenasia_2026-04-13.jpg</td><td class="status-reviewed">Reviewed</td><td>Full TAX INVOICE. Supplier VAT No: 4020241016. R949.60 &lt; R5000; abridged invoice sufficient. Pump 8, Attendant: Silindile. VAT at 15/115.</td></tr><tr class=""><td>PS-004</td><td>2026-03-27</td><td>10:15</td><td>Total Volta (K43 Service Station)</td><td>Cnr K43 &amp; Volta Streets, Ext 10</td><td>Lenasia</td><td>Total</td><td>Excellium ULP 95</td><td>19.70</td><td>20.30</td><td>400</td><td>Card (Visa)</td><td>****1097</td><td>IL23265450656b2496d6b</td><td></td><td></td><td></td><td></td><td>Travel - Motor Vehicle Expenses</td><td></td><td>Bank statements/Processed slips/2026-03/PS-004_total-volta-lenasia_2026-03-27.jpg</td><td class="status-reviewed">Reviewed</td><td>Full TAX INVOICE. Supplier VAT No: 4020241016. Pump 12, Attendant: Amadu. No CVM used. VAT at 15/115.</td></tr><tr class="row-needs-review"><td>PS-005</td><td>2026-05-04</td><td>05:46</td><td>Astron Energy AE Eikenhof</td><td></td><td>Eikenhof</td><td>Astron Energy</td><td>95 ULP A</td><td>23.60</td><td>23.36</td><td>551.40</td><td>Card (Visa Debit)</td><td>****2725</td><td>TRX:56370533</td><td>PENDING</td><td></td><td>Quintus Lategan</td><td>General business travel</td><td>Travel - Motor Vehicle Expenses</td><td></td><td>Bank statements/Processed slips/2026-05/PS-005_astron-eikenhof_2026-05-04.jpg</td><td class="status-hold">Hold</td><td>Payment24 card terminal receipt only; no full tax invoice / station VAT No on slip. Petrol ULP 95 = zero-rated (s11 VAT Act). Price/litre R23.36 calculated (not printed). Attendant: M YASE. Vehicle reg outstanding — Quintus to supply before Zoho import. Blocked: cannot substantiate business travel without vehicle reg (logbook requirement, s11(a)/s23(g)).</td></tr><tr class="row-needs-review"><td>PS-006</td><td>2026-05-07</td><td>07:09</td><td>Astron Energy AE Eikenhof</td><td></td><td>Eikenhof</td><td>Astron Energy</td><td>95 ULP A</td><td>40.89</td><td>26.63</td><td>1,088.90</td><td>Card (Visa Debit)</td><td>****2725</td><td>TRX:56861044</td><td>PENDING</td><td></td><td>Quintus Lategan</td><td>General business travel</td><td>Travel - Motor Vehicle Expenses</td><td></td><td>Bank statements/Processed slips/2026-05/PS-006_astron-eikenhof_2026-05-07.jpg</td><td class="status-hold">Hold</td><td>Payment24 card terminal receipt only; no full tax invoice / station VAT No on slip. Petrol ULP 95 = zero-rated (s11 VAT Act). Price/litre R26.63 calculated (not printed). Attendant: G BOPAPE. Vehicle reg outstanding — Quintus to supply before Zoho import. Blocked: cannot substantiate business travel without vehicle reg (logbook requirement, s11(a)/s23(g)).</td></tr><tr class=""><td>PS-007</td><td>2026-02-05</td><td>13:05</td><td>Build It Jeffreys Bay</td><td>Lifestyle Centre, St Francis Street</td><td>Jeffreys Bay</td><td>N/A - Hardware</td><td>N/A</td><td></td><td></td><td>140</td><td>Card (CC)</td><td></td><td>INV1277024</td><td></td><td></td><td>Quintus Lategan</td><td>Business - Repairs &amp; Maintenance</td><td>Repairs &amp; Maintenance</td><td></td><td>Bank statements/Processed slips/2026-05/PS-007_buildit-jeffreysbay_2026-02-05.jpg</td><td class="status-reviewed">Reviewed</td><td>Tax invoice from Build It Jeffreys Bay (INV1277024). Items: plumbing fittings. Total R140.00 incl. VAT R18.26 (excl. R121.74). Supplier VAT No: 4050269663 (confirmed on invoice). Standard-rated supply at 15% — input VAT R18.26 claimable (s20 VAT Act; abridged invoice sufficient for supply &lt;= R5,000). BACK-DATED ENTRY: slip date 2026-02-05. FLAG: Verify whether 2026-02-05 falls within the current open VAT period before claiming input VAT. If VAT period for Feb 2026 is already closed/submitted, input VAT claim must be deferred to next available period or prior period amended. Rule: s11(d) Income Tax Act (repairs, not improvements); s20 VAT Act (tax invoice). Evidence: full tax invoice on file.</td></tr></tbody></table>
+</main>
+<footer class="flo-footer">
+  Forflowmatic Automations · Reporting Portal · Auto-generated <span id="genTs"></span>
+</footer>
+<script>
+  document.getElementById('genTs').textContent = '2026-05-10 19:11';
+  const search = document.getElementById('search');
+  const rows = document.querySelectorAll('.viewer-table tbody tr');
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    rows.forEach(r => {
+      r.style.display = (!q || r.textContent.toLowerCase().includes(q)) ? '' : 'none';
+    });
+  });
+</script>
+</body>
+</html>
